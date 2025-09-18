@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jp_transliterate/jp_transliterate.dart';
+import 'package:japanese_sentence_similarity/src/string_utils.dart';
 
 class TransliterateToken {
   final String surface;
@@ -48,7 +49,9 @@ class TransliterateResult {
     };
   }
 
-  String get transliteratedText => tokens.map((token) => token.variants.first).join();
+  String get transliteratedText => tokens.map((token) {
+    return StringUtils.removeNumberAndSpecial(token.variants).first;
+  }).join();
 
   Future<String> getTransliteratedRomaji() async {
     final transliterated = await JpTransliterate.transliterate(kanji: transliteratedText);
