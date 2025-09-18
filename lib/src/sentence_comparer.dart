@@ -2,7 +2,7 @@ import 'package:japanese_sentence_similarity/src/string_utils.dart';
 import 'package:japanese_sentence_similarity/src/transliterate_service.dart';
 import  'package:string_similarity/string_similarity.dart';
 
-class KanjiCompareService {
+class SentenceComparer {
   static Future<double> compare(String text1, String text2) async {
     final service = GoogleTransliterateService();
     final romaji1 = await service.convertToRomaji(StringUtils.removeJapanesePunctuation(text1));
