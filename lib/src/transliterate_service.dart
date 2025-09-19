@@ -50,6 +50,9 @@ class TransliterateResult {
   }
 
   String get transliteratedText => tokens.map((token) {
+    if(token.surface.isHiragana) {
+      return token.surface;
+    }
     return StringUtils.removeNumberAndSpecial(token.variants).first;
   }).join();
 
