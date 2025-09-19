@@ -3,10 +3,15 @@ import 'package:japanese_sentence_similarity/src/transliterate_service.dart';
 import  'package:string_similarity/string_similarity.dart';
 
 class SentenceComparer {
-  static Future<double> compare(String text1, String text2) async {
+  static Future<double> compare(String question, String answer, {List<String> requiredTexts = const []}) async {
     final service = GoogleTransliterateService();
-    final romaji1 = await service.convertToRomaji(StringUtils.removeJapanesePunctuation(text1));
-    final romaji2 = await service.convertToRomaji(StringUtils.removeJapanesePunctuation(text2));
-    return romaji1.similarityTo(romaji2);
+    final questionRomaji = await service.convertToRomaji(StringUtils.removeJapanesePunctuation(question));
+    final answerRomaji = await service.convertToRomaji(StringUtils.removeJapanesePunctuation(answer));
+    if(requiredTexts.isNotEmpty) {
+      for (var requiredText in requiredTexts) {
+        if(!answerRomaji.contains(requiredText.romaji)) return 0;
+      }
+    }
+    return questionRomaji.similarityTo(answerRomaji);
   }
 }

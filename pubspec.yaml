@@ -1,6 +1,6 @@
 name: japanese_sentence_similarity
 description: "Compare japanese sentence"
-version: 0.0.2
+version: 0.0.3
 homepage:
 
 environment:
@@ -13,6 +13,7 @@ dependencies:
   jp_transliterate: ^1.0.5
   string_similarity: ^2.1.1
   http: ^1.5.0
+  kana_kit: ^2.1.1
 
 dev_dependencies:
   flutter_test:
