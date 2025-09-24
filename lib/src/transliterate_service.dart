@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:japanese_sentence_similarity/src/cache_helper.dart';
 import 'package:jp_transliterate/jp_transliterate.dart';
 import 'package:japanese_sentence_similarity/src/string_utils.dart';
 
@@ -70,14 +71,23 @@ class TransliterateResult {
 class GoogleTransliterateService {
   final String baseUrl = "http://www.google.com/transliterate?langpair=ja-Hira|ja&text=";
 
-  Future<String> convertToRomaji(String text) async {
+  Future<String> convertToRomaji(String text, {bool shouldLoadFromCache = false}) async {
+    if(shouldLoadFromCache) {
+      final cacheData = await CacheHelper.getData(text);
+      if(cacheData != null) {
+        return cacheData;
+      }
+    }
+
     final url = Uri.parse(baseUrl + Uri.encodeComponent(text));
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       final result = TransliterateResult.fromJson(data);
-      return result.getTransliteratedRomaji();
+      final romaji = result.getTransliteratedRomaji();
+      if(shouldLoadFromCache) await CacheHelper.saveData(text, romaji);
+      return romaji;
     } else {
       throw Exception("Failed to fetch transliterate data: ${response.statusCode}");
     }
