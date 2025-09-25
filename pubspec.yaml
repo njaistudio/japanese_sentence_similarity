@@ -1,6 +1,6 @@
 name: japanese_sentence_similarity
 description: "Compare japanese sentence"
-version: 0.0.3
+version: 0.0.4
 homepage:
 
 environment:
