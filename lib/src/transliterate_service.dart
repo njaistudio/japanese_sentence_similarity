@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:japanese_sentence_similarity/src/cache_helper.dart';
-import 'package:jp_transliterate/jp_transliterate.dart';
 import 'package:japanese_sentence_similarity/src/string_utils.dart';
 
 class TransliterateToken {
@@ -54,12 +53,11 @@ class TransliterateResult {
     if(token.surface.isHiragana) {
       return token.surface;
     }
-    return StringUtils.removeNumberAndSpecial(token.variants).first;
+    return JssStringUtils.removeNumberAndSpecial(token.variants).first;
   }).join();
 
   Future<String> getTransliteratedRomaji() async {
-    final transliterated = await JpTransliterate.transliterate(kanji: transliteratedText);
-    return transliterated.romaji.replaceAll(" ", "");
+    return await JssStringUtils.getTransliteratedRomaji(transliteratedText);
   }
 
   @override

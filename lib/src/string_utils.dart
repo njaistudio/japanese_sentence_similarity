@@ -1,8 +1,9 @@
+import 'package:jp_transliterate/jp_transliterate.dart';
 import 'package:kana_kit/kana_kit.dart';
 
 const kanaKit = KanaKit();
 
-class StringUtils {
+class JssStringUtils {
   static String removeJapanesePunctuation(String text) {
     return text.replaceAll(RegExp(r'[^\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}\p{N}\p{L}]', unicode: true), '');
   }
@@ -16,9 +17,14 @@ class StringUtils {
     }).where((s) => s.isNotEmpty).toList();
     return clean;
   }
+
+  static Future<String> getTransliteratedRomaji(String kanji) async {
+    final transliterated = await JpTransliterate.transliterate(kanji: kanji);
+    return transliterated.romaji.replaceAll(" ", "");
+  }
 }
 
-extension StringExt on String {
+extension JssStringExt on String {
   String get hiragana => kanaKit.toHiragana(this);
   String get romaji => kanaKit.toRomaji(this);
   String get katakana => kanaKit.toKatakana(this);
