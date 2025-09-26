@@ -83,7 +83,7 @@ class GoogleTransliterateService {
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       final result = TransliterateResult.fromJson(data);
-      final romaji = result.getTransliteratedRomaji();
+      final romaji = await result.getTransliteratedRomaji();
       if(shouldLoadFromCache) await CacheHelper.saveData(text, romaji);
       return romaji;
     } else {
