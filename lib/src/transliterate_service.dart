@@ -34,12 +34,14 @@ class TransliterateToken {
 
 class TransliterateResult {
   final List<TransliterateToken> tokens;
+  final bool keepHiragana;
 
-  TransliterateResult({required this.tokens});
+  TransliterateResult({required this.tokens, this.keepHiragana = false});
 
-  factory TransliterateResult.fromJson(List<dynamic> json) {
+  factory TransliterateResult.fromJson(List<dynamic> json, {bool keepHiragana = false}) {
     return TransliterateResult(
       tokens: json.map((e) => TransliterateToken.fromJson(e)).toList(),
+      keepHiragana: keepHiragana,
     );
   }
 
@@ -50,7 +52,7 @@ class TransliterateResult {
   }
 
   String get transliteratedText => tokens.map((token) {
-    if(token.surface.isHiragana) {
+    if(token.surface.isHiragana && keepHiragana) {
       return token.surface;
     }
     return JssStringUtils.removeNumberAndSpecial(token.variants).first;
@@ -69,7 +71,7 @@ class TransliterateResult {
 class GoogleTransliterateService {
   final String baseUrl = "http://www.google.com/transliterate?langpair=ja-Hira|ja&text=";
 
-  Future<String> convertToRomaji(String text, {bool shouldLoadFromCache = false}) async {
+  Future<String> convertToRomaji(String text, {bool shouldLoadFromCache = false, bool keepHiragana = false}) async {
     if(shouldLoadFromCache) {
       final cacheData = await CacheHelper.getData(text);
       if(cacheData != null) {
@@ -82,7 +84,7 @@ class GoogleTransliterateService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      final result = TransliterateResult.fromJson(data);
+      final result = TransliterateResult.fromJson(data, keepHiragana: keepHiragana);
       final romaji = await result.getTransliteratedRomaji();
       if(shouldLoadFromCache) await CacheHelper.saveData(text, romaji);
       return romaji;
