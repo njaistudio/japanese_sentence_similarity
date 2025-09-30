@@ -22,6 +22,41 @@ class JssStringUtils {
     final transliterated = await JpTransliterate.transliterate(kanji: kanji);
     return transliterated.romaji.replaceAll(" ", "");
   }
+
+  static String removeExceptions(String text) {
+    final exceptions = {
+      "あの方" : "あのかた",
+      "いま、" : "今",
+      "何時" : "なんじ",
+      "いっかい" : "いちかい",
+      "降りそうです" : "ふりそうです",
+      "1" : "一",
+      "１" : "一",
+      "2" : "二",
+      "２" : "二",
+      "3" : "三",
+      "３" : "三",
+      "4" : "四",
+      "４" : "四",
+      "5" : "五",
+      "５" : "五",
+      "6" : "六",
+      "６" : "六",
+      "7" : "七",
+      "７" : "七",
+      "8" : "八",
+      "８" : "八",
+      "9" : "九",
+      "９" : "九"
+    };
+
+    exceptions.forEach((key, value) {
+      if(text.contains(key)) {
+        text = text.replaceAll(key, value);
+      }
+    });
+    return text;
+  }
 }
 
 extension JssStringExt on String {
